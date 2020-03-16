@@ -21,7 +21,7 @@ use Getopt::Std;
 use Config::Simple;
 # use File::Copy::Vigilant qw( copy );
 
-use vars qw( $logFileName $opt_c $cfg $bagit_path $tbd_dir $stage_dir $dl_dir $football_dir $archive_dir $bagit_cmd $bagval_cmd $zip_cmd $sha_cmd $namePfx $eject_cmd );
+use vars qw( $logFileName $opt_c $cfg $bagit_path $tbd_dir $stage_dir $dl_dir $football_dir $archive_dir $bagit_cmd $bagval_cmd $zip_cmd $sha_cmd $namePfx );
 
 getopts("c:") or die "\nUsage: $0 [-c configfile]\n";
 
@@ -39,7 +39,6 @@ $stage_dir = $cfg->param("isZippedDir");
 $dl_dir = $cfg->param("downloadDir");
 $football_dir = $cfg->param("footballDir");
 $archive_dir = $cfg->param("archiveDir");
-$eject_cmd = $cfg->param("ejectCmd");
 $sha_cmd = $cfg->param("sha256Cmd");
 
 $namePfx = 1;
@@ -206,7 +205,7 @@ dot_message("$cp_run");
 plus_message("Done! Ejecting football drive.");
 
 # 18. eject drive
-print `$eject_cmd`;
+# print `$eject_cmd`;
 
 close(FLOG);
 
@@ -272,5 +271,4 @@ sub normalizeName {
 __END__
 
 # /home/dwhite/Downloads/bagit-python-master/bagit.py  --sha1 --md5 --sha256 --log 90001.log --external-identifier 90002 /tmp/to-be-bagged/90002 ; date
-
 
