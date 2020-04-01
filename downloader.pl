@@ -66,7 +66,7 @@ if (! -e "$stage_dir") { minus_message("Could not make the staging directory $st
 # build some generic commands
 $bagit_cmd = "$bagit_path/bagit.py  --sha1 --md5 --sha256 --log [ETID].log --external-identifier [ETID] [TBDDIR]/[ETID] ";
 $bagval_cmd = "$bagit_path/bagit.py  --log [ETID].val.log --validate [TBDDIR]/[ETID] ";
-$zip_cmd = 'cd [TBDDIR]/[ETID] ; zip -u -9 -pr -mT [STAGEDIR]/[ETID].zip . '; # and Unicode support, etc.
+$zip_cmd = 'cd [TBDDIR]/[ETID] ; zip -u -9 -pr -mT [STAGEDIR]/[ETID].bag.zip . '; # and Unicode support, etc.
 
 # 1.  identify ETID dirs
 my $etid_ls = `ls $tbd_dir`;
@@ -85,7 +85,7 @@ for my $e (@etids) {
 	# 2. ensure dir contains 1 PDF, 1 PNG, 1 non-(PDF|PNG)
 	my $contentLs = `ls $tbd_dir/$e`;
 	chomp $contentLs;
-	if ( ($contentLs =~ /\.pdf/i) && ($contentLs =~ /\.png/i) && ($contentLs =~ /\.[a-oq-z][a-ce-m-o-z][a-egh-z]/i) ) {
+	if ( ($contentLs =~ /\.pdf/i) && ($contentLs =~ /\.png/i) && ( ($contentLs =~ /\.[a-oq-z]../i) || ($contentLs =~ /\..[a-ce-mo-z]./i) || ($contentLs =~ /\...[a-eh-z]/i) )) {
 	    # normalize the PNG and PDF file names
 	    my @pnames = split(/\n/,$contentLs);
 	    for my $p (@pnames) {
@@ -116,9 +116,9 @@ for my $e (@etids) {
 		# 6. report on bag validity
 	        dot_message("$e bag is valid."); 
 	        # 7. zip bag
-	        print FLOG "zip -mT $stage_dir/$e.zip $e.log $e.val.log\n";
-	        print "zip -mT $stage_dir/$e.zip $e.log $e.val.log\n";
-	        my $zl_run =  `zip -mT "$stage_dir/$e.zip" $e.log $e.val.log`;
+	        print FLOG "zip -mT $stage_dir/$e.bag.zip $e.log $e.val.log\n";
+	        print "zip -mT $stage_dir/$e.bag.zip $e.log $e.val.log\n";
+	        my $zl_run =  `zip -mT "$stage_dir/$e.bag.zip" $e.log $e.val.log`;
 	        my $z_cmd = $zip_cmd;
 	        $z_cmd =~ s/\[ETID\]/$e/g;
 	        $z_cmd =~ s/\[TBDDIR\]/$tbd_dir/g;
@@ -128,7 +128,7 @@ for my $e (@etids) {
 	        my $z_run = `$z_cmd`;
 		plus_message("$z_run");
 		# 8. 9. test and report on zip status
-		if (-e "$stage_dir/$e.zip") { 
+		if (-e "$stage_dir/$e.bag.zip") { 
 			print FLOG "rmdir  $tbd_dir/$e\n" ;  
 			print "rmdir  $tbd_dir/$e\n" ;  
 			my $r_cmd =  `rmdir  "$tbd_dir/$e" `;  # remove empty bag directory
@@ -157,9 +157,9 @@ minus_message( "$incompleteDirs ETID directories in $tbd_dir could not be bagged
 if ($incompleteDirs == scalar(@etids)) { close(FLOG); die "\n################################\nno valid ETID dirs were found in $tbd_dir\n"; }
 
 # 10. hash zip files
-dot_message( "cd $stage_dir ; $sha_cmd *.zip | sort > zip-hashes.txt");
-# print `cd "$stage_dir" ; $sha_cmd *.zip > zip-hashes.txt`;
-my $sha_run =  `cd "$stage_dir" ; $sha_cmd *.zip | sort > zip-hashes.txt`;
+dot_message( "cd $stage_dir ; $sha_cmd *.bag.zip | sort > zip-hashes.txt");
+# print `cd "$stage_dir" ; $sha_cmd *.bag.zip > zip-hashes.txt`;
+my $sha_run =  `cd "$stage_dir" ; $sha_cmd *.bag.zip | sort > zip-hashes.txt`;
 
 # check again to be paranoid
 if (! -d "$football_dir/Cart")  { close(FLOG);  die "\n################################\n\0 : cannot find the football Cart directory at $football_dir/Cart\n";}
@@ -187,7 +187,7 @@ for my $f (@stageFiles) {
  `cd "$football_dir/Cart" ;  chmod a+rw * `;
 
 # 13. check hashes of zips on football against the manifest
-my $zipTestRun = `cd "$football_dir/Cart" ; $sha_cmd *.zip | sort > /tmp/zipTestRun.txt ; diff -q /tmp/zipTestRun.txt "$football_dir/Cart/zip-hashes.txt" `;
+my $zipTestRun = `cd "$football_dir/Cart" ; $sha_cmd *.bag.zip | sort > /tmp/zipTestRun.txt ; diff -q /tmp/zipTestRun.txt "$football_dir/Cart/zip-hashes.txt" `;
 # 14. report problems
 if ($zipTestRun =~ /differ/i) { close(FLOG); die "\n################################\n$0 : hashes of Zip files in football Cart have been corrupted!\n#################################\n"; }
 else { plus_message( "hashes match on the football!"); }
