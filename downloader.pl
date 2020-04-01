@@ -96,6 +96,12 @@ for my $e (@etids) {
 	        }
             }
 
+            # DRW bugfix for missing bin folder
+            my $mkd = `mkdir -pv $tbd_dir/$e/bin`;
+            print "make dir $tbd_dir/$e/bin -- $mkd\n";
+            my $mvd = `mv -v $tbd_dir/$e/* $tbd_dir/$e/bin`;
+            print "move dir $tbd_dir/$e/* to bin -- $mvd\n";
+
 	    # 4. make bag
 	    my $b_cmd = $bagit_cmd;
 	    $b_cmd =~ s/\[ETID\]/$e/g;   # sub in the actual values
