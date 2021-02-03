@@ -85,7 +85,7 @@ for my $e (@etids) {
 	# 2. ensure dir contains 1 PDF, 1 PNG, 1 non-(PDF|PNG)
 	my $contentLs = `ls $tbd_dir/$e`;
 	chomp $contentLs;
-	if ( ($contentLs =~ /\.pdf/i) && ($contentLs =~ /\.png/i) && ( ($contentLs =~ /\.[a-oq-z]../i) || ($contentLs =~ /\..[a-ce-mo-z]./i) || ($contentLs =~ /\...[a-eh-z]/i) )) {
+	if ( ($contentLs =~ /\.pdf/i) && ($contentLs =~ /\.png/i) && ( ($contentLs =~ /\.[a-oq-z]/i) || ($contentLs =~ /\..[a-ce-mo-z]/i) || ($contentLs =~ /\...[a-eh-z]/i) )) {
 	    # normalize the PNG and PDF file names
 	    my @pnames = split(/\n/,$contentLs);
 	    for my $p (@pnames) {
