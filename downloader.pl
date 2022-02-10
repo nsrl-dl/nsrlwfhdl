@@ -34,11 +34,11 @@ $cfg = new Config::Simple($opt_c);
 
 # load vars from config data
 $bagit_path = $cfg->param("bagitPath");
-$tbd_dir = $cfg->param("toBeBaggedDir");
-$stage_dir = $cfg->param("isZippedDir");
-$dl_dir = $cfg->param("downloadDir");
-$football_dir = $cfg->param("footballDir");
-$archive_dir = $cfg->param("archiveDir");
+$tbd_dir = $ENV{"HOME"} . "/" . $cfg->param("toBeBaggedDir");
+$stage_dir = $ENV{"HOME"} . "/" . $cfg->param("isZippedDir");
+$dl_dir = $ENV{"HOME"} . "/" . $cfg->param("downloadDir");
+$football_dir = $ENV{"HOME"} . "/" . $cfg->param("footballDir");
+$archive_dir = $ENV{"HOME"} . "/" . $cfg->param("archiveDir");
 $sha_cmd = $cfg->param("sha256Cmd");
 
 $namePfx = 1;
